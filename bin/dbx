@@ -3,18 +3,42 @@
 """dbx: Dropbox Revision Control
 
 Usage: 
+  dbx init
   dbx commit (MESSAGE)
   dbx checkout (REVISION)
   dbx log
 
 Options:
-  -h --help                           Display this message and exit
+  -h --help     Display this message and exit
 
 """
 
+import os
 from docopt import docopt
+from os import path
+from ConfigParser import ConfigParser
+
+def init():
+  parser = ConfigParser()
+  parser.add_section('dbx')
+  name = path.split(os.getcwd())[1]
+  parser.set('dbx', 'name', name)
+  with open(path.abspath('.dbx'), 'w') as writer:
+    parser.write(writer)
+
+  print 'dbx repository initialized at: %s' % path.abspath('.')
+
+def commit(message):
+  pass
+
+def checkout(revision):
+  pass
+
+def log():
+  pass
 
 if __name__ == "__main__":
   arguments = docopt(__doc__) 
 
-  print arguments
+  if 'init' in arguments:
+    init()

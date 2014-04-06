@@ -53,8 +53,8 @@ class Datastore(object):
 
     self.commit_table = self.datastore.get_table('commit_table')
 
-  def add_commit(self, files):
-    record = self.commit_table.insert(files=json.dumps(files))
+  def add_commit(self, repo, message, files):
+    record = self.commit_table.insert(repo=repo, message=message, files=json.dumps(files))
     self.datastore.commit()
     return record.get_id()
 
