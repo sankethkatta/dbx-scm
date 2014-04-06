@@ -32,15 +32,29 @@ def init():
 
 def commit(message):
   r = Revision()
+  ds = Datastore()
   root = r.parser.get('general', 'home')
-  path = re.findall("%s/(.*)" % root, os.getcwd())[0]
-  r.snapshot_revisions(path)
+  relpath = re.findall("%s/(.*)" % root, os.getcwd())[0]
+  files = r.snapshot_revisions(relpath)
+  parser = ConfigParser()
+  parser.read(path.abspath('.dbx'))
+  name = parser.get('dbx', 'name')
+  id = ds.add_commit(name, message, files)
+  print "committed %s" % id
 
 def checkout(revision):
-  pass
+  ds = Datastore()
+  r = Revision()
+  files = ds.get_commit(revision)['files']
+  r.checkout_revisions(files)
 
 def log():
-  pass
+  parser = ConfigParser()
+  parser.read(path.abspath('.dbx'))
+  name = parser.get('dbx', 'name')
+  ds = Datastore()
+  for record in ds.commit_table.query(repo=name):
+    print "%s\t%s" % (record.get('message'), record.get_id())
 
 if __name__ == "__main__":
   arguments = docopt(__doc__) 
@@ -50,3 +64,9 @@ if __name__ == "__main__":
 
   if arguments.get('commit'):
     commit(arguments['MESSAGE'])
+
+  if arguments.get('log'):
+    log()
+
+  if arguments.get('checkout'):
+    checkout(arguments['REVISION'])

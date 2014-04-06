@@ -18,8 +18,8 @@ class Revision(BaseDropbox):
         else:
           files[item['path']] = item['rev']
     recurse(path)
-    print files
+    return files
 
   def checkout_revisions(self, files):
-    pass
-
+    for file, revision in files.items():
+      self.client.restore(file, revision)

@@ -18,7 +18,8 @@ class Datastore(BaseDropbox):
     return record.get_id()
 
   def get_commit(self, commit):
-    return self.commit_table.get(commit)
+    record = self.commit_table.get(commit)
+    return {'id': record.get_id(), 'files': json.loads(record.get('files'))}
 
   def delete_datastore(self):
     self.manager.delete_datastore('default')
